@@ -21,12 +21,12 @@
 import os 
 
 # Import the PyQt and QGIS libraries
+from qgis.core import QGis, QgsApplication, QgsMapLayer, QgsMapLayerRegistry
 from PyQt4.QtCore import ( QObject, SIGNAL, QCoreApplication, QFile, QLocale, 
                            QTranslator, QFileInfo, QSettings )
-from PyQt4.QtGui import QMessageBox, QIcon, QAction
-from qgis.core import QGis, QgsApplication, QgsMapLayer, QgsMapLayerRegistry
+from PyQt4.QtGui import QIcon, QAction
 # Initialize Qt resources from file resources.py
-import resources
+import resources_rc
 
 class RemoveEmptyLayers:
 
@@ -37,67 +37,47 @@ class RemoveEmptyLayers:
 
     def initGui(self):
         # Create action that will start plugin configuration
-        self.action = QAction( self.getThemeIcon(), QCoreApplication.translate( "REL", 
-            "Remove empty layers" ), self.iface.mainWindow() )
+        self.action = QAction( QIcon( ":/plugins/removeemptylayers/icon_default.png" ),
+            QCoreApplication.translate( "REL", "Remove empty layers" ), 
+            self.iface.mainWindow() )
         # connect the action to the run method
-        QObject.connect(self.action, SIGNAL("triggered()"), self.run)
+        self.action.triggered.connect(self.run)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToMenu( QCoreApplication.translate( "REL", 
+        self.iface.addPluginToVectorMenu( QCoreApplication.translate( "REL", 
             "&Remove empty layers" ), self.action)
-
-        QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
 
     def unload(self):
         # Remove the plugin menu item and icon
-        self.iface.removePluginMenu( QCoreApplication.translate( "REL",
-            "&Remove empty layers" ),self.action ) 
+        self.iface.removePluginVectorMenu( QCoreApplication.translate( "REL",
+            "&Remove empty layers" ), self.action ) 
         self.iface.removeToolBarIcon(self.action)
 
     # run method that performs all the real work
     def run(self):
-        numLayers = 0
-        self.iface.mapCanvas().setRenderFlag( False ) 
+        toBeRemoved = []
         for layer in self.iface.legendInterface().layers():
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.featureCount() == 0:
-                    if QGis.QGIS_VERSION[0:3] < "1.7":
-                        QgsMapLayerRegistry.instance().removeMapLayer( layer.getLayerID() )
-                    else: 
-                        QgsMapLayerRegistry.instance().removeMapLayer( layer.id() )
-                    numLayers += 1
+                    toBeRemoved.append( layer.id() )
+
+        if toBeRemoved:
+            QgsMapLayerRegistry.instance().removeMapLayers( toBeRemoved )	
 
         msg = ''
+        numLayers = len(toBeRemoved)
         if numLayers == 0:
-            msg = QCoreApplication.translate( "REL", 'There are no empty layers to remove.' )
+            msg = QCoreApplication.translate( "REL", "There are no empty layers to remove." )
         elif numLayers == 1: 
-            msg = QCoreApplication.translate( "REL", 'There has been removed 1 layer.' )
+            msg = QCoreApplication.translate( "REL", "One layer has been removed." )
         else:
-            msg = QCoreApplication.translate( "REL", 'There have been removed ' ) + \
-                str( numLayers ) + QCoreApplication.translate( "REL", ' layers.' ) 
-      
-        QMessageBox.information( self.iface.mainWindow(), QCoreApplication.translate( "REL", 
-              "Remove empty layers" ), msg, QMessageBox.Ok )
+            msg = str( numLayers ) + QCoreApplication.translate( "REL", 
+                " layers have been removed." )
 
-        self.iface.mapCanvas().setRenderFlag( True ) 
+        self.iface.messageBar().pushMessage( QCoreApplication.translate( "REL", 
+              "[Remove empty layers]" ), msg, duration=8 )
 
-    def setCurrentTheme( self, themeName ):
-        # Update the icon to match the current theme
-        self.action.setIcon( self.getThemeIcon( themeName ) )
-
-    def getThemeIcon( self, themeName="" ):
-        # Get the icon from the current theme
-        if themeName == "" : themeName = QgsApplication.activeThemePath().split("/")[3]
-        if themeName == "newgis": themeName = "gis"
-        if themeName == "classic": themeName = "default"
-        iconPath = ":/plugins/removeemptylayers/icon_" + themeName + ".png"
-        if QFile.exists( iconPath ):
-            return QIcon( iconPath )
-        if QFile.exists( ":/plugins/removeemptylayers/icon_gis.png" ):
-            return QIcon( ":/plugins/removeemptylayers/icon_gis.png" )
-        else:
-            return QIcon()
 
     def installTranslator( self ):
         userPluginPath = os.path.join( os.path.dirname( str( QgsApplication.qgisUserDbFilePath() ) ), "python/plugins/RemoveEmptyLayers" )

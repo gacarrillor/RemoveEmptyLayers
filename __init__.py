@@ -19,19 +19,16 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-from PyQt4.QtCore import QCoreApplication
-
 def name():
-    return QCoreApplication.translate( "REL", "Remove empty layers from the map" )
+    return "Remove empty layers from the map"
 def description():
-    return QCoreApplication.translate( "REL", "'Cleans' the layer list widget (legend) by removing empty layers" )
+    return "'Cleans' the layer list widget (legend) by removing empty layers"
 def version():
-    return "Version 2.0"
+    return "Version 2.1"
 def icon():
     return "icon_default.png"
 def qgisMinimumVersion():
     return "2.0"
 def classFactory(iface):
-    # load RemoveEmptyLayers class from file RemoveEmptyLayers
     from removeemptylayers import RemoveEmptyLayers
     return RemoveEmptyLayers(iface)

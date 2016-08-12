@@ -1,51 +1,13 @@
-#/***************************************************************************
-# RemoveEmptyLayers
-# 
-# This plugin 'cleans' the layer list widget by removing empty layers
-#                             -------------------
-#        begin                : 2011-03-06
-#        copyright            : (C) 2011 by German Carrillo, GeoTux
-#        email                : geotux_tuxman@linuxmail.org
-# ***************************************************************************/
-# 
-#/***************************************************************************
-# *                                                                         *
-# *   This program is free software; you can redistribute it and/or modify  *
-# *   it under the terms of the GNU General Public License as published by  *
-# *   the Free Software Foundation; either version 2 of the License, or     *
-# *   (at your option) any later version.                                   *
-# *                                                                         *
-# ***************************************************************************/
 
-# Makefile for a PyQGIS plugin 
+all: resources_rc.py removeemptylayers_es.qm
 
-PLUGINNAME = removeemptylayers
+clean: 	
+	rm -f resources_rc.py
+	rm -f removeemptylayers_es.qm
+	rm -f *.pyc *~
 
-PY_FILES = removeemptylayers.py __init__.py
+resources_rc.py: resources.qrc
+	pyrcc4 -o resources_rc.py resources.qrc
 
-EXTRAS = icon.png 
-
-#UI_FILES = ui_removeemptylayers.py
-
-RESOURCE_FILES = resources.py
-
-default: compile
-
-compile: $(UI_FILES) $(RESOURCE_FILES)
-
-%.py : %.qrc
-	pyrcc4 -o $@  $<
-
-%.py : %.ui
-	pyuic4 -o $@ $<
-
-# The deploy  target only works on unix like operating system where
-# the Python plugin directory is located at:
-# $HOME/.qgis/python/plugins
-deploy: compile
-	mkdir -p $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(PY_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(UI_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(RESOURCE_FILES) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-	cp -vf $(EXTRAS) $(HOME)/.qgis/python/plugins/$(PLUGINNAME)
-
+removeemptylayers_es.qm: removeemptylayers_es.ts
+	lrelease removeemptylayers_es.ts -qm removeemptylayers_es.qm

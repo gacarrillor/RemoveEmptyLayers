@@ -1,6 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/removeemptylayers" >
-        <file>icon_default.png</file>
-        <file>icon_2.png</file>
-    </qresource>
+  <qresource prefix="/plugins/removeemptylayers">
+    <file>icon_default.png</file>
+  </qresource>
 </RCC>
