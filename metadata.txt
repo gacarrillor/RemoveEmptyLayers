@@ -2,7 +2,7 @@
 [general]
 name=Remove empty layers from the map
 description='Cleans' the layer list widget (legend) by removing empty layers
-
+about='Cleans' the layer list widget (legend) by removing empty layers
 version=2.1
 qgisMinimumVersion=2.0
 
