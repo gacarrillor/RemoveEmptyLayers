@@ -1,0 +1,38 @@
+; the next section is mandatory
+[general]
+name=Remove empty layers from the map
+description='Cleans' the layer list widget (legend) by removing empty layers
+
+version=2.0
+qgisMinimumVersion=2.0
+
+; not used yet, will allow to put a plugin in the right menu
+category=Layers
+
+author=Germán Carrillo (GeoTux)
+email=geotux_tuxman@linuxmail.org
+
+; end of mandatory metadata
+
+; start of optional metadata
+
+changelog=2.0 (20.12.2013) 
+    ...Migration to QGIS 2.0
+    1.1 (07.03.2011):
+    ...Use of the user locale setting (QSettings) instead of the system variable (QLocale).
+    1.0 (07.03.2011):
+    ...First version
+
+; tags are in comma separated value format, spaces are allowed
+tags=layers,empty,vector,toc,legend,remove
+
+homepage=http://geotux.tuxfamily.org/index.php/en/geo-blogs/item/297-plugin-remover-capas-vacias-qgis
+tracker=http://hub.qgis.org/projects/removeemptylayers
+repository=http://websvn.tuxfamily.org/listing.php?repname=tuxgis/geotux&path=/trunk/removeemptylayers/
+
+
+; path to a icon within the plugin folder
+icon=icon_default.png
+
+experimental=False
+deprecated=False
