@@ -3,8 +3,8 @@
 name=Remove empty layers from the map
 description='Cleans' the layer list widget (legend) by removing empty layers
 about='Cleans' the layer list widget (legend) by removing empty layers
-version=2.1
-qgisMinimumVersion=2.0
+version=3.0
+qgisMinimumVersion=3.0
 
 ; not used yet, will allow to put a plugin in the right menu
 category=Vector
@@ -17,19 +17,21 @@ email=gcarrillo@linuxmail.org
 ; start of optional metadata
 
 changelog=
-  [2.1] (20160812) 
+  [3.0] (20180318)
+   - Migrate to QGIS 3.x
+  [2.1] (20160812)
    - Move plugin to GitHub.
    - Refactor Makefile.
    - Improve layer removal by using removeMapLayers().
    - Reconstruct translations.
    - Display messages in QgsMessageBar.
    - Single icon for GUI (there were 2, depending on defined QGIS theme).
-  [2.0] (20131220) 
+  [2.0] (20131220)
    - Migration to QGIS 2.0.
-  [1.1] (20110307) 
-   - Use of the user locale setting (QSettings) instead of the system variable 
-     (QLocale).  
-  [1.0] (20110307) 
+  [1.1] (20110307)
+   - Use of the user locale setting (QSettings) instead of the system variable
+     (QLocale).
+  [1.0] (20110307)
    - First version.
 
 ; tags are in comma separated value format, spaces are allowed

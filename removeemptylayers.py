@@ -18,15 +18,16 @@
  *                                                                         *
  ***************************************************************************/
 """
-import os 
+import os
 
 # Import the PyQt and QGIS libraries
-from qgis.core import QGis, QgsApplication, QgsMapLayer, QgsMapLayerRegistry
-from PyQt4.QtCore import ( QObject, SIGNAL, QCoreApplication, QFile, QLocale, 
+from qgis.core import QgsApplication, QgsMapLayer, QgsProject
+from qgis.PyQt.QtCore import ( QObject, QCoreApplication, QFile, QLocale,
                            QTranslator, QFileInfo, QSettings )
-from PyQt4.QtGui import QIcon, QAction
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QAction
 # Initialize Qt resources from file resources.py
-import resources_rc
+from .resources_rc import *
 
 class RemoveEmptyLayers:
 
@@ -38,49 +39,49 @@ class RemoveEmptyLayers:
     def initGui(self):
         # Create action that will start plugin configuration
         self.action = QAction( QIcon( ":/plugins/removeemptylayers/icon_default.png" ),
-            QCoreApplication.translate( "REL", "Remove empty layers" ), 
+            QCoreApplication.translate( "REL", "Remove empty layers" ),
             self.iface.mainWindow() )
         # connect the action to the run method
         self.action.triggered.connect(self.run)
 
         # Add toolbar button and menu item
         self.iface.addToolBarIcon(self.action)
-        self.iface.addPluginToVectorMenu( QCoreApplication.translate( "REL", 
+        self.iface.addPluginToVectorMenu( QCoreApplication.translate( "REL",
             "&Remove empty layers" ), self.action)
 
     def unload(self):
         # Remove the plugin menu item and icon
         self.iface.removePluginVectorMenu( QCoreApplication.translate( "REL",
-            "&Remove empty layers" ), self.action ) 
+            "&Remove empty layers" ), self.action )
         self.iface.removeToolBarIcon(self.action)
 
     # run method that performs all the real work
     def run(self):
         toBeRemoved = []
-        for layer in self.iface.legendInterface().layers():
+        for key, layer in QgsProject.instance().mapLayers().items():
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.featureCount() == 0:
                     toBeRemoved.append( layer.id() )
 
         if toBeRemoved:
-            QgsMapLayerRegistry.instance().removeMapLayers( toBeRemoved )	
+            QgsProject.instance().removeMapLayers( toBeRemoved )
 
         msg = ''
         numLayers = len(toBeRemoved)
         if numLayers == 0:
             msg = QCoreApplication.translate( "REL", "There are no empty layers to remove." )
-        elif numLayers == 1: 
+        elif numLayers == 1:
             msg = QCoreApplication.translate( "REL", "One layer has been removed." )
         else:
-            msg = str( numLayers ) + QCoreApplication.translate( "REL", 
+            msg = str( numLayers ) + QCoreApplication.translate( "REL",
                 " layers have been removed." )
 
-        self.iface.messageBar().pushMessage( QCoreApplication.translate( "REL", 
+        self.iface.messageBar().pushMessage( QCoreApplication.translate( "REL",
               "[Remove empty layers]" ), msg, duration=8 )
 
 
     def installTranslator( self ):
-        userPluginPath = os.path.join( os.path.dirname( str( QgsApplication.qgisUserDbFilePath() ) ), "python/plugins/RemoveEmptyLayers" )
+        userPluginPath = os.path.join( os.path.dirname( str( QgsApplication.qgisUserDatabaseFilePath() ) ), "python/plugins/RemoveEmptyLayers" )
         systemPluginPath = os.path.join( str( QgsApplication.prefixPath() ), "python/plugins/RemoveEmptyLayers" )
         translationPath = ''
 

@@ -19,16 +19,6 @@
  ***************************************************************************/
  This script initializes the plugin, making it known to QGIS.
 """
-def name():
-    return "Remove empty layers from the map"
-def description():
-    return "'Cleans' the layer list widget (legend) by removing empty layers"
-def version():
-    return "Version 2.1"
-def icon():
-    return "icon_default.png"
-def qgisMinimumVersion():
-    return "2.0"
 def classFactory(iface):
-    from removeemptylayers import RemoveEmptyLayers
+    from .removeemptylayers import RemoveEmptyLayers
     return RemoveEmptyLayers(iface)
