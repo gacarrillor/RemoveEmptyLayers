@@ -1,2 +1,4 @@
 *.qm
 resources_rc.py
+.idea/
+__pycache__/
